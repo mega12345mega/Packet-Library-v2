@@ -11,7 +11,9 @@ A rewrite of [Packet Library](https://github.com/mega12345mega/Packet-Library) w
 * Fully documented with javadocs
 
 # How to use
-Refer to the [Simple Packet Library Test](https://github.com/mega12345mega/Simple-Packet-Library/blob/main/test/SimplePacketLibraryTest.java) for a full example
+Refer to the [Simple Packet Library Test](https://github.com/mega12345mega/Simple-Packet-Library/blob/main/test/SimplePacketLibraryTest.java) for an example with custom packets
+
+This is the [Simple Packet Library Test 2](https://github.com/mega12345mega/Simple-Packet-Library/blob/main/test/SimplePacketLibraryTest2.java) example
 ```
 // Create the server and client
 Server server = new Server(31415);
