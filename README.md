@@ -10,6 +10,11 @@ A rewrite of [Packet Library](https://github.com/mega12345mega/Packet-Library) w
 * Easy to begin using
 * Fully documented with javadocs
 
+# JavaScript variant
+A JavaScript rewrite is now available! It doesn't support servers or non-WebSocket clients, but it can still communicate with a Java WebSocket server!
+Use this to get started: <br>
+`<script src="https://luneruniverse.com/simple-packet-library" crossorigin="anonymous"></script>`
+
 # How to use
 Refer to the [Simple Packet Library Test](https://github.com/mega12345mega/Simple-Packet-Library/blob/main/test/SimplePacketLibraryTest.java) for an example with custom packets
 
