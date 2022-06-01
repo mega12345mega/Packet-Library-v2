@@ -144,12 +144,13 @@ public class Server extends PacketRegistry implements ErrorHandler<Server> {
 	/**
 	 * Start the server <br>
 	 * Use addConnectionHandler to know when clients have connected
+	 * @return this
 	 * @throws IOException if an I/O error occurs when opening the socket
 	 * @see #close()
 	 */
-	public void start() throws IOException {
+	public Server start() throws IOException {
 		if (isAlive())
-			return;
+			return this;
 		
 		socket = (useWebSocket ? new StandardWebSocketServer(port) : new StandardServer(new ServerSocket(port)));
 		thread = new Thread(() -> {
@@ -175,6 +176,8 @@ public class Server extends PacketRegistry implements ErrorHandler<Server> {
 			}
 		}, "Server [" + port + "]");
 		thread.start();
+		
+		return this;
 	}
 	
 	/**
