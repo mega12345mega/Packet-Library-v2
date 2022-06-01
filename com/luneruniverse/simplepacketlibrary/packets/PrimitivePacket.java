@@ -50,11 +50,7 @@ public class PrimitivePacket extends Packet {
 				setValue(in.readDouble());
 				break;
 			case 9:
-				StringBuilder request = new StringBuilder();
-				int strLength = in.readInt();
-				for (int i = 0; i < strLength; i++)
-					request.append(in.readChar());
-				setValue(request.toString());
+				setValue(in.readUTF());
 				break;
 			default:
 				throw new IOException("Primitive packet is corrupted!");
@@ -109,8 +105,7 @@ public class PrimitivePacket extends Packet {
 					break;
 				case "java.lang.String":
 					out.write(9);
-					out.writeInt(((String) value).length());
-					out.writeChars((String) value);
+					out.writeUTF((String) value);
 					break;
 				default:
 					throw new IllegalArgumentException("Only primitive data types and Strings are supported!");

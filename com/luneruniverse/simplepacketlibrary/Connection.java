@@ -7,7 +7,6 @@ import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.Socket;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -23,14 +22,14 @@ import com.luneruniverse.simplepacketlibrary.packets.Packet;
  * Handles sending and receiving packets
  * @see PacketListener
  */
-public class Connection extends PacketRegistry {
+public abstract class Connection extends PacketRegistry implements ErrorHandler<Connection> {
 	
 	protected final Queue<PacketListener> packetListeners;
 	private volatile int timeout;
 	private final Map<Integer, Map.Entry<Long, PacketListener>> responseListeners; // Waiting for a response for sent packets
 	private volatile int lastPacketId;
 	private final Map<Packet, Integer> responseIds; // Received a packet that may want a response
-	protected Socket socket;
+	protected BasicSocket socket;
 	private Thread thread;
 	
 	Connection(Queue<PacketListener> packetListeners) {
@@ -40,36 +39,32 @@ public class Connection extends PacketRegistry {
 		this.lastPacketId = -1;
 		this.responseIds = Collections.synchronizedMap(new WeakHashMap<>());
 	}
-	protected void start(Socket socket) {
+	protected void start(BasicSocket socket) {
 		this.socket = socket;
 		thread = new Thread(() -> {
 			try {
-				DataInputStream in = new DataInputStream(socket.getInputStream());
 				while (isAlive() && !Thread.interrupted()) {
-					int id = in.readInt();
-					int responseId = in.readInt();
-					Class<? extends Packet> packetType = getPacketType(in.readInt());
-					byte[] data = new byte[in.readInt()];
-					in.read(data);
+					PacketData packetData = socket.readPacket();
+					Class<? extends Packet> packetType = getPacketType(packetData.packetType);
 					if (packetType == null) {
-						new Exception("Unregistered packet type received!").printStackTrace();
+						onError(new Exception("Unregistered packet type received!"), this, ErrorHandler.Error.UNREGISTERED_PACKET);
 						continue;
 					}
 					try {
-						Packet packet = packetType.getConstructor(DataInputStream.class).newInstance(new DataInputStream(new ByteArrayInputStream(data)));
-						responseIds.put(packet, id);
-						if (responseId != -1) {
-							Map.Entry<Long, PacketListener> listener = responseListeners.get(responseId);
+						Packet packet = packetType.getConstructor(DataInputStream.class).newInstance(new DataInputStream(new ByteArrayInputStream(packetData.data)));
+						responseIds.put(packet, packetData.id);
+						if (packetData.responseId != -1) {
+							Map.Entry<Long, PacketListener> listener = responseListeners.get(packetData.responseId);
 							if (listener != null && listener.getKey() != -1 && listener.getKey() < System.currentTimeMillis())
-								responseListeners.remove(responseId);
+								responseListeners.remove(packetData.responseId);
 							else if (listener != null)
 								invokePacketListeners(Collections.singletonList(listener.getValue()), packet);
 						} else
 							invokePacketListeners(packetListeners, packet);
 					} catch (InvocationTargetException e) {
-						new Exception("The contructor in a registered received packet threw an exception", e).printStackTrace();
+						onError(new Exception("The contructor in a registered received packet threw an exception", e), this, ErrorHandler.Error.CONSTRUCTING_PACKET);
 					} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | NoSuchMethodException | SecurityException e) {
-						new Exception("Unable to load a registered received packet", e).printStackTrace();
+						onError(new Exception("Unable to load a registered received packet", e), this, ErrorHandler.Error.CONSTRUCTING_PACKET);
 					}
 				}
 			} catch (InterruptedException | EOFException e) {
@@ -77,11 +72,11 @@ public class Connection extends PacketRegistry {
 			} catch (IOException e) {
 				if (Thread.interrupted())
 					return;
-				e.printStackTrace();
+				onError(e, this, ErrorHandler.Error.HANDLING_PACKETS);
 				try {
 					close();
 				} catch (IOException | InterruptedException e1) {
-					e1.printStackTrace();
+					onError(e1, this, ErrorHandler.Error.CLOSING_CONNECTION);
 				}
 			} finally {
 				onClose();
@@ -97,7 +92,7 @@ public class Connection extends PacketRegistry {
 				try {
 					listener.onPacket(packet, this, wait);
 				} catch (IOException e) {
-					e.printStackTrace();
+					onError(e, this, ErrorHandler.Error.INSIDE_PACKET_LISTENER);
 				}
 			}, "Packet Listener");
 			thread.start();
@@ -137,7 +132,8 @@ public class Connection extends PacketRegistry {
 			});
 		}
 		
-		DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+		ByteArrayOutputStream buf = new ByteArrayOutputStream();
+		DataOutputStream out = new DataOutputStream(buf);
 		out.writeInt(id);
 		out.writeInt(responseId);
 		out.writeInt(getPacketId(packet));
@@ -146,6 +142,7 @@ public class Connection extends PacketRegistry {
 		out.writeInt(data.size());
 		out.write(data.toByteArray());
 		out.flush();
+		socket.sendPacket(buf.toByteArray());
 		
 		return id;
 	}
