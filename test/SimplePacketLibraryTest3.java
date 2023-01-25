@@ -17,8 +17,8 @@ public class SimplePacketLibraryTest3 {
 		FileInputStream stream = new FileInputStream(new File("src/test/keystore.jks"));
 		SSLContext ssl = Server.generateSSLContext(stream, "JKS", "storepassword", "keypassword", "SunX509");
 		stream.close();
-		Server server = new Server(31415).useWebSocket(true)
-				.addServerErrorHandler((e, obj, info) -> e.printStackTrace()).setSecure(ssl)
+		Server server = new Server(31415).useWebSocket(true).setSecure(ssl)
+				.addServerErrorHandler((e, obj, info) -> e.printStackTrace())
 				.addConnectionErrorHandler((e, obj, info) -> e.printStackTrace());
 		Client client = new Client("wss://localhost", 31415).useWebSocket(true)
 				.addErrorHandler((e, obj, info) -> e.printStackTrace());

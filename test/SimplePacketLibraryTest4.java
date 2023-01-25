@@ -8,7 +8,7 @@ import java.net.UnknownHostException;
 import com.luneruniverse.simplepacketlibrary.Client;
 import com.luneruniverse.simplepacketlibrary.PacketRegistry;
 import com.luneruniverse.simplepacketlibrary.Server;
-import com.luneruniverse.simplepacketlibrary.TypedPacketListener;
+import com.luneruniverse.simplepacketlibrary.listeners.TypedPacketListener;
 import com.luneruniverse.simplepacketlibrary.packets.Packet;
 import com.luneruniverse.simplepacketlibrary.packets.PrimitivePacket;
 
@@ -40,12 +40,12 @@ public class SimplePacketLibraryTest4 {
 		
 		// Called when the client first connects
 		server.addConnectionListener((connection, wait) -> {
-			connection.sendPacket(new NameRequestPacket(), (packet, connection2, wait2) -> {
+			server.sendPacket(new NameRequestPacket(), (packet, connection2, wait2) -> {
 				System.out.println("[Client -> Server] " + (String) ((PrimitivePacket) packet).getValue());
 				try {
 					// Stop the server when done
 					// Will cause the client to also close
-					server.close();
+					server.close();throw new IOException("test");
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
