@@ -7,7 +7,7 @@ A rewrite of [Packet Library](https://github.com/mega12345mega/Packet-Library) w
 * Custom packets
 * Responding to specific packets, creating a "side conversation" of sorts
 * Controlling the processing of packets while handling a packet
-* Websockets (both ws:// and wss://)
+* Web sockets (both ws:// and wss://)
 * Easy to begin using
 * Fully documented with javadocs
 
@@ -17,6 +17,8 @@ Use this to get started: <br>
 `<script src="https://luneruniverse.com/simple-packet-library" crossorigin="anonymous"></script>`
 
 # How to use
+The [wiki](https://github.com/mega12345mega/Simple-Packet-Library/wiki) contains a tutorial on how to use the different parts of the library
+
 Refer to the [Simple Packet Library Test](https://github.com/mega12345mega/Simple-Packet-Library/blob/main/test/SimplePacketLibraryTest.java) for an example with custom packets
 
 This is the [Simple Packet Library Test 2](https://github.com/mega12345mega/Simple-Packet-Library/blob/main/test/SimplePacketLibraryTest2.java) example
