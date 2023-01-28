@@ -37,7 +37,7 @@ public class ServerConnection extends Connection {
 	/**
 	 * The handler is called when an error occurs <br>
 	 * Calling this twice will cause the handler to be called twice
-	 * @param handler
+	 * @param handler The handler to add
 	 * @return this
 	 * @see #removeErrorHandler(ErrorHandler)
 	 */
@@ -48,7 +48,7 @@ public class ServerConnection extends Connection {
 	/**
 	 * The handler will stop being called <br>
 	 * If {@link #addErrorHandler(ErrorHandler)} was called twice, it will still be called once
-	 * @param handler
+	 * @param handler The handler to remove
 	 * @return If the handler was registered
 	 * @see #addErrorHandler(ErrorHandler)
 	 */

@@ -1,7 +1,7 @@
 package com.luneruniverse.simplepacketlibrary;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URISyntaxException;
@@ -12,8 +12,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.net.ssl.SSLContext;
 
-import com.luneruniverse.simplepacketlibrary.accessors.RawSocketAccess;
 import com.luneruniverse.simplepacketlibrary.accessors.ClientWebSocketAccess;
+import com.luneruniverse.simplepacketlibrary.accessors.RawSocketAccess;
 import com.luneruniverse.simplepacketlibrary.listeners.ErrorHandler;
 import com.luneruniverse.simplepacketlibrary.listeners.PacketListener;
 import com.luneruniverse.simplepacketlibrary.packets.Packet;
@@ -55,7 +55,7 @@ public class Client extends Connection {
 	 * @param port The port to connect to
 	 * @see #start()
 	 */
-	public Client(int port) throws UnknownHostException, IOException {
+	public Client(int port) {
 		this(null, port);
 	}
 	
@@ -97,7 +97,7 @@ public class Client extends Connection {
 	 * Specify whether or not this should use a WebSocket rather than a normal Socket <br>
 	 * The server must also be in the same mode <br>
 	 * A WebSocket allows communication with the JavaScript variant of this library
-	 * @param useWebSocket
+	 * @param useWebSocket If WebSocket mode should be enabled
 	 * @return this
 	 * @see #isWebSocket()
 	 * @see Server#useWebSocket(boolean)
@@ -120,7 +120,7 @@ public class Client extends Connection {
 	 * Allows for wss:// connections, instead of just ws://
 	 * @param ssl The SSLContext, or null to disable SSL
 	 * @return this
-	 * @see #generateSSLContext(File, String, String, String, String)
+	 * @see Server#generateSSLContext(InputStream, String, String, String, String)
 	 * @see #isSecure()
 	 * @see #useWebSocket(boolean)
 	 */
@@ -144,7 +144,7 @@ public class Client extends Connection {
 	/**
 	 * The listener is called when a {@link Packet} is received <br>
 	 * Calling this twice will cause the listener to be called twice
-	 * @param listener
+	 * @param listener The listener to add
 	 * @return this
 	 * @see #removePacketListener(PacketListener)
 	 */
@@ -156,7 +156,7 @@ public class Client extends Connection {
 	/**
 	 * The listener will stop being called <br>
 	 * If {@link #addPacketListener(PacketListener)} was called twice, it will still be called once
-	 * @param listener
+	 * @param listener The listener to remove
 	 * @return If the listener was registered
 	 * @see #addPacketListener(PacketListener)
 	 */
@@ -204,7 +204,7 @@ public class Client extends Connection {
 	/**
 	 * The handler is called when an error occurs <br>
 	 * Calling this twice will cause the handler to be called twice
-	 * @param handler
+	 * @param handler The handler to add
 	 * @return this
 	 * @see #removeErrorHandler(ErrorHandler)
 	 */
@@ -215,7 +215,7 @@ public class Client extends Connection {
 	/**
 	 * The handler will stop being called <br>
 	 * If {@link #addErrorHandler(ErrorHandler)} was called twice, it will still be called once
-	 * @param handler
+	 * @param handler The handler to remove
 	 * @return If the handler was registered
 	 * @see #addErrorHandler(ErrorHandler)
 	 */

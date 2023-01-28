@@ -13,10 +13,24 @@ import com.luneruniverse.simplepacketlibrary.packets.PrimitivePacket;
  */
 public class PacketRegistry {
 	
+	/**
+	 * Deserializes a packet from a {@link DataInputStream}
+	 * @param <T> The packet type
+	 */
 	@FunctionalInterface
 	public interface PacketConstructor<T extends Packet> {
+		/**
+		 * Deserializes a packet from a {@link DataInputStream}
+		 * @param in The data stream to create your packet from
+		 * @return The created packet
+		 * @throws Exception If there was an error deserializing the packet
+		 */
 		public T get(DataInputStream in) throws Exception;
 	}
+	/**
+	 * 
+	 * @param <T> The packet type
+	 */
 	private static class PacketType<T extends Packet> {
 		private final Class<T> clazz;
 		private final PacketConstructor<T> constructor;
@@ -69,7 +83,7 @@ public class PacketRegistry {
 	public <T extends Packet> void registerPacket(Class<T> clazz) throws IllegalArgumentException {
 		try {
 			Constructor<T> constructor = clazz.getConstructor(DataInputStream.class);
-			registerPacket(clazz, constructor::newInstance);
+			registerPacket(clazz, in -> constructor.newInstance(in));
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Unable to get constructor for packet class!", e);
 		}

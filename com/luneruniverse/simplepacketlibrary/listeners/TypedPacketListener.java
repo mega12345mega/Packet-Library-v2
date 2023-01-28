@@ -1,6 +1,5 @@
 package com.luneruniverse.simplepacketlibrary.listeners;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +17,10 @@ import com.luneruniverse.simplepacketlibrary.packets.Packet;
  */
 public class TypedPacketListener implements PacketListener {
 	
+	/**
+	 * Called when a packet is received
+	 * @param <T> The packet type
+	 */
 	@FunctionalInterface
 	public interface GenericPacketListener<T extends Packet> {
 		/**
@@ -25,10 +28,11 @@ public class TypedPacketListener implements PacketListener {
 		 * @param packet The packet that was received
 		 * @param connection What connection the packet is from
 		 * @param wait View the {@link WaitState} docs for information
+		 * @throws Exception If there was an exception handling the packet
 		 * @see ServerConnection
 		 * @see Client
 		 */
-		public void onPacket(T packet, Connection connection, WaitState wait) throws IOException;
+		public void onPacket(T packet, Connection connection, WaitState wait) throws Exception;
 		
 		/**
 		 * Convert this to a normal {@link PacketListener} with an unchecked cast <br>
@@ -76,7 +80,7 @@ public class TypedPacketListener implements PacketListener {
 	}
 	
 	@Override
-	public void onPacket(Packet packet, Connection connection, WaitState wait) throws IOException {
+	public void onPacket(Packet packet, Connection connection, WaitState wait) throws Exception {
 		List<PacketListener> matchedListeners = listeners.entrySet().stream()
 				.filter(type -> type.getKey().isAssignableFrom(packet.getClass()))
 				.flatMap(entry -> entry.getValue().stream())

@@ -88,6 +88,13 @@ public abstract class Connection extends PacketRegistry implements ErrorHandler<
 		}, "Connection");
 		thread.start();
 	}
+	/**
+	 * Internal use only <br>
+	 * Invoke the packet listeners with the specified packet
+	 * @param listeners The listeners to invoke
+	 * @param packet The packet
+	 * @throws InterruptedException If the thread was interrupted
+	 */
 	public void invokePacketListeners(Collection<PacketListener> listeners, Packet packet) throws InterruptedException {
 		Map<Thread, WaitState> threads = new HashMap<>();
 		for (PacketListener listener : listeners) {

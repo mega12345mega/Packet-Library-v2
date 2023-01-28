@@ -19,11 +19,25 @@ import org.java_websocket.handshake.ServerHandshake;
 import com.luneruniverse.simplepacketlibrary.Client;
 import com.luneruniverse.simplepacketlibrary.listeners.ErrorHandler;
 
+/**
+ * The implementation for the WebSocket mode on the client
+ */
 public class ClientWebSocketAccess extends WebSocketClient implements SocketAccess {
 	
 	private final Client client;
 	private final Queue<PacketData> packets;
 	
+	/**
+	 * Internal use only <br>
+	 * Create a WebSocket client
+	 * @param client The actual client
+	 * @param ip The ip to connect to
+	 * @param port The port to connect on
+	 * @param timeout The connection timeout
+	 * @param ssl The SSL certificate
+	 * @throws URISyntaxException If the ip is invalid
+	 * @throws IOException If there was an error connecting
+	 */
 	public ClientWebSocketAccess(Client client, String ip, int port, int timeout, SSLContext ssl) throws URISyntaxException, IOException {
 		super(new URI(ip + ":" + port));
 		this.client = client;

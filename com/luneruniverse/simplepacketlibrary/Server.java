@@ -1,6 +1,5 @@
 package com.luneruniverse.simplepacketlibrary;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
@@ -103,6 +102,10 @@ public class Server extends PacketRegistry implements ErrorHandler<Server> {
 		useWebSocket(false);
 	}
 	
+	/**
+	 * Get the port
+	 * @return port
+	 */
 	public int getPort() {
 		return port;
 	}
@@ -111,7 +114,7 @@ public class Server extends PacketRegistry implements ErrorHandler<Server> {
 	 * Specify whether or not this should use a WebSocket rather than a normal Socket <br>
 	 * The client must also be in the same mode <br>
 	 * A WebSocket allows communication with the JavaScript variant of this library
-	 * @param useWebSocket
+	 * @param useWebSocket If WebSocket mode should be enabled
 	 * @return this
 	 * @see #isWebSocket()
 	 * @see Client#useWebSocket(boolean)
@@ -135,7 +138,7 @@ public class Server extends PacketRegistry implements ErrorHandler<Server> {
 	 * Allows for wss:// connections, instead of just ws://
 	 * @param ssl The SSLContext, or null to disable SSL
 	 * @return this
-	 * @see #generateSSLContext(File, String, String, String, String)
+	 * @see #generateSSLContext(InputStream, String, String, String, String)
 	 * @see #isSecure()
 	 * @see #useWebSocket(boolean)
 	 */
@@ -159,7 +162,7 @@ public class Server extends PacketRegistry implements ErrorHandler<Server> {
 	/**
 	 * The listener is called when a {@link Client} connects <br>
 	 * Calling this twice will cause the listener to be called twice
-	 * @param listener
+	 * @param listener The listener to add
 	 * @return this
 	 * @see #removeConnectionListener(ConnectionListener)
 	 * @see #setConnectAllowed(boolean)
@@ -172,7 +175,7 @@ public class Server extends PacketRegistry implements ErrorHandler<Server> {
 	/**
 	 * The listener will stop being called <br>
 	 * If {@link #addConnectionListener(ConnectionListener)} was called twice, it will still be called once
-	 * @param listener
+	 * @param listener The listener to remove
 	 * @return If the listener was registered
 	 * @see #addConnectionListener(ConnectionListener)
 	 */
@@ -183,7 +186,7 @@ public class Server extends PacketRegistry implements ErrorHandler<Server> {
 	/**
 	 * The listener is called when a {@link Packet} is received <br>
 	 * Calling this twice will cause the listener to be called twice
-	 * @param listener
+	 * @param listener The listener to add
 	 * @return this
 	 * @see #removePacketListener(PacketListener)
 	 */
@@ -195,7 +198,7 @@ public class Server extends PacketRegistry implements ErrorHandler<Server> {
 	/**
 	 * The listener will stop being called <br>
 	 * If {@link #addPacketListener(PacketListener)} was called twice, it will still be called once
-	 * @param listener
+	 * @param listener The listener to remove
 	 * @return If the listener was registered
 	 * @see #addPacketListener(PacketListener)
 	 */
@@ -293,7 +296,7 @@ public class Server extends PacketRegistry implements ErrorHandler<Server> {
 	 * @param response The listener to call on a response
 	 * @param excluded ServerConnections to avoid sending the packet to
 	 * @throws IOException If there was an error sending the packet
-	 * @see #sendPacket(Packet)
+	 * @see #sendPacket(Packet, ServerConnection...)
 	 */
 	public void sendPacket(Packet packet, PacketListener response, ServerConnection... excluded) throws IOException {
 		List<IOException> exceptions = new ArrayList<>();
@@ -318,7 +321,7 @@ public class Server extends PacketRegistry implements ErrorHandler<Server> {
 	 * @param packet The packet to send
 	 * @param excluded ServerConnections to avoid sending the packet to
 	 * @throws IOException If there was an error sending the packet
-	 * @see #sendPacket(Packet, PacketListener)
+	 * @see #sendPacket(Packet, PacketListener, ServerConnection...)
 	 */
 	public void sendPacket(Packet packet, ServerConnection... excluded) throws IOException {
 		sendPacket(packet, null, excluded);
@@ -375,7 +378,7 @@ public class Server extends PacketRegistry implements ErrorHandler<Server> {
 	 * <br>
 	 * The handler is called when an error occurs <br>
 	 * Calling this twice will cause the handler to be called twice
-	 * @param handler
+	 * @param handler The handler to add
 	 * @return this
 	 * @see #removeServerErrorHandler(ErrorHandler)
 	 * @see #addConnectionErrorHandler(ErrorHandler)
@@ -389,7 +392,7 @@ public class Server extends PacketRegistry implements ErrorHandler<Server> {
 	 * <br>
 	 * The handler will stop being called <br>
 	 * If {@link #addServerErrorHandler(ErrorHandler)} was called twice, it will still be called once
-	 * @param handler
+	 * @param handler The handler to remove
 	 * @return If the handler was registered
 	 * @see #addServerErrorHandler(ErrorHandler)
 	 * @see #removeConnectionErrorHandler(ErrorHandler)
@@ -404,7 +407,7 @@ public class Server extends PacketRegistry implements ErrorHandler<Server> {
 	 * The handler is called when an error occurs <br>
 	 * Calling this twice will cause the handler to be called twice <br>
 	 * The error handler is automatically added to already active connections
-	 * @param handler
+	 * @param handler The handler to add
 	 * @return this
 	 * @see #removeConnectionErrorHandler(ErrorHandler)
 	 * @see #addServerErrorHandler(ErrorHandler)
@@ -421,7 +424,7 @@ public class Server extends PacketRegistry implements ErrorHandler<Server> {
 	 * The handler will stop being called <br>
 	 * If {@link #addConnectionErrorHandler(ErrorHandler)} was called twice, it will still be called once <br>
 	 * The error handler is automatically removed from already active connections
-	 * @param handler
+	 * @param handler The handler to remove
 	 * @return If the handler was registered, including in any of the connections
 	 * @see #addConnectionErrorHandler(ErrorHandler)
 	 * @see #removeServerErrorHandler(ErrorHandler)

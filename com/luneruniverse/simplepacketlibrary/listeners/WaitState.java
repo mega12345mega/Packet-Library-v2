@@ -14,6 +14,9 @@ public class WaitState {
 	
 	private boolean wait;
 	
+	/**
+	 * Create a new WaitState, with waiting enabled
+	 */
 	public WaitState() {
 		wait = true;
 	}

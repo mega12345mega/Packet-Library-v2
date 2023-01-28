@@ -44,24 +44,55 @@ public interface ErrorHandler<T> {
 	 */
 	public enum Error {
 		// Connection
+		/**
+		 * The library received a packet with an invalid id
+		 */
 		UNREGISTERED_PACKET(CloseInfo.NOTHING),
+		/**
+		 * A packet constructor threw an exception
+		 */
 		CONSTRUCTING_PACKET(CloseInfo.NOTHING),
+		/**
+		 * There was an exception in the main connection thread
+		 */
 		HANDLING_PACKETS(CloseInfo.CLOSE_CONNECTION),
+		/**
+		 * A packet listener threw an exception
+		 */
 		INSIDE_PACKET_LISTENER(CloseInfo.NOTHING),
+		/**
+		 * There was an exception while closing the connection
+		 */
 		CLOSING_CONNECTION(CloseInfo.CLOSE_CONNECTION),
 		
 		// Server Side
+		/**
+		 * There was an exception while a connection was being accepted
+		 */
 		ACCEPTING_CONNECTIONS(CloseInfo.NOTHING),
+		/**
+		 * A connection listener threw an exception
+		 */
 		INSIDE_CONNECTION_LISTENER(CloseInfo.NOTHING),
 		
 		// WebSocket
+		/**
+		 * There was an exception while reading a packet from a WebSocket
+		 */
 		READING_WEBSOCKET_PACKET(CloseInfo.NOTHING),
+		/**
+		 * There was an unknown exception in a WebSocket
+		 */
 		GENERIC_WEBSOCKET(CloseInfo.UNKNOWN);
 		
 		private CloseInfo closeInfo;
 		private Error(CloseInfo closeInfo) {
 			this.closeInfo = closeInfo;
 		}
+		/**
+		 * Get the result of the error
+		 * @return What was closed
+		 */
 		public CloseInfo getCloseInfo() {
 			return closeInfo;
 		}

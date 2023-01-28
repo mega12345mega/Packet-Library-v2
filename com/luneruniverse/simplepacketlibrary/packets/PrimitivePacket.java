@@ -20,6 +20,11 @@ public class PrimitivePacket extends Packet {
 	public PrimitivePacket(Object value) {
 		setValue(value);
 	}
+	/**
+	 * Read in a primitive packet from a data stream
+	 * @param in The payload
+	 * @throws IOException If there was an exception reading the packet
+	 */
 	public PrimitivePacket(DataInputStream in) throws IOException {
 		switch (in.read()) {
 			case 0:

@@ -13,7 +13,7 @@ public abstract class Packet {
 	/**
 	 * Saves the packet data to a stream
 	 * @param out The stream to save the data to
-	 * @throws IOException
+	 * @throws IOException If there was an exception writing the packet
 	 */
 	public abstract void write(DataOutputStream out) throws IOException;
 }

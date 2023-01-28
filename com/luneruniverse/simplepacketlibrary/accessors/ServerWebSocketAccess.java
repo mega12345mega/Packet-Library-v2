@@ -12,12 +12,20 @@ import org.java_websocket.WebSocket;
 
 import com.luneruniverse.simplepacketlibrary.ServerConnection;
 
+/**
+ * The implementation for the WebSocket mode for the server connection
+ */
 public class ServerWebSocketAccess implements SocketAccess {
 	
 	private ServerConnection connection;
 	private final WebSocket socket;
 	private final Queue<PacketData> packets;
 	
+	/**
+	 * Internal use only <br>
+	 * Create a WebSocket server connection
+	 * @param socket The internal socket
+	 */
 	public ServerWebSocketAccess(WebSocket socket) {
 		this.socket = socket;
 		this.packets = new ConcurrentLinkedQueue<>();
@@ -26,6 +34,9 @@ public class ServerWebSocketAccess implements SocketAccess {
 	public void setConnection(ServerConnection connection) {
 		this.connection = connection;
 	}
+	/**
+	 * @return The corresponding {@link ServerConnection}
+	 */
 	public ServerConnection getConnection() {
 		return connection;
 	}

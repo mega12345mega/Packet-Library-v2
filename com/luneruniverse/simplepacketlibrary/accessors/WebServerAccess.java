@@ -19,12 +19,21 @@ import com.luneruniverse.simplepacketlibrary.Server;
 import com.luneruniverse.simplepacketlibrary.ServerConnection;
 import com.luneruniverse.simplepacketlibrary.listeners.ErrorHandler;
 
+/**
+ * The implementation for the WebSocket mode for the server
+ */
 public class WebServerAccess extends WebSocketServer implements ServerAccess {
 	
 	private final Server server;
 	private final Map<WebSocket, ServerWebSocketAccess> connections;
 	private final Queue<ServerWebSocketAccess> connectionsQueue;
 	
+	/**
+	 * Internal use only <br>
+	 * Create a WebServer
+	 * @param server The actual server
+	 * @param ssl The SSL certificate
+	 */
 	public WebServerAccess(Server server, SSLContext ssl) {
 		super(new InetSocketAddress(server.getPort()));
 		this.server = server;
